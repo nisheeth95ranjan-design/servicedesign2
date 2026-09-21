@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Design Academy — Learn by Playing</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --navy: #0D1B2A;
+    --teal: #1B9AAA;
+    --teal-light: #E8F7F9;
+    --coral: #F4845F;
+    --coral-light: #FEE8DF;
+    --sand: #F9F4EF;
+    --yellow: #FCD34D;
+    --gray: #6B7280;
+    --dark: #374151;
+    --white: #FFFFFF;
+    --purple: #7C3AED;
+    --green: #059669;
+    --red: #DC2626;
+    --shadow: 0 4px 24px rgba(13,27,42,0.12);
+    --shadow-lg: 0 12px 48px rgba(13,27,42,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ══════════════════════════════════════
+     HOME SCREEN
+  ══════════════════════════════════════ */
+  #home {
+    background: var(--navy);
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #home::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(27,154,170,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #home::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(244,132,95,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .home-content {
+    text-align: center;
+    max-width: 720px;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(27,154,170,0.2);
+    border: 1px solid rgba(27,154,170,0.4);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .home-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .home-title span { color: var(--coral); }
+
+  .home-subtitle {
+    font-size: 18px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .home-stats {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .btn-primary {
+    background: var(--coral);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(244,132,95,0.4);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(244,132,95,0.5);
+    background: #e8724a;
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 28px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 12px;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.14);
+  }
+
+  /* ══════════════════════════════════════
+     MODULE SELECT
+  ══════════════════════════════════════ */
+  #modules {
+    background: var(--sand);
+    color: var(--navy);
+  }
+
+  .modules-header {
+    background: var(--navy);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .modules-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--white);
+  }
+
+  .progress-global {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .xp-badge {
+    background: var(--yellow);
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .module-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent, var(--teal));
+  }
+
+  .module-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent, var(--teal));
+  }
+
+  .module-card.completed::after {
+    content: '✓ DONE';
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--green);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+  }
+
+  .module-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .module-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+
+  .module-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .module-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .module-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  .module-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     LESSON SCREEN
+  ══════════════════════════════════════ */
+  #lesson {
+    background: var(--sand);
+    color: var(--navy);
+  }
+
+  .lesson-header {
+    background: var(--navy);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .back-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .back-btn:hover { background: rgba(255,255,255,0.18); }
+
+  .lesson-title-small {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    flex: 1;
+  }
+
+  .progress-bar-wrap {
+    width: 200px;
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .lesson-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    width: 100%;
+  }
+
+  /* ── Concept Card ── */
+  .concept-card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    animation: slideIn 0.4s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .concept-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .step-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+    flex-shrink: 0;
+  }
+
+  .step-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .concept-heading {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .concept-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--dark);
+    margin-bottom: 20px;
+  }
+
+  .concept-body strong { color: var(--navy); }
+
+  .highlight-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 16px 20px;
+    border-radius: 0 12px 12px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--navy);
+    margin: 16px 0;
+  }
+
+  .coral-box {
+    background: var(--coral-light);
+    border-left: 4px solid var(--coral);
+    padding: 16px 20px;
+    border-radius: 0 12px 12px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--navy);
+    margin: 16px 0;
+  }
+
+  .visual-diagram {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 20px 0;
+    color: white;
+  }
+
+  .diagram-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+
+  .diagram-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .diagram-node {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .diagram-arrow {
+    font-size: 18px;
+    color: rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+
+  .continue-btn {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .continue-btn:hover {
+    background: var(--teal);
+    transform: translateY(-1px);
+  }
+
+  /* ── Quiz Card ── */
+  .quiz-card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.4s ease;
+  }
+
+  .quiz-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--navy);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-question {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+
+  .quiz-scenario {
+    font-size: 14px;
+    color: var(--gray);
+    background: var(--sand);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  .options-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .option-btn {
+    background: var(--sand);
+    border: 2px solid transparent;
+    color: var(--navy);
+    padding: 14px 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.4;
+    width: 100%;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .option-btn .opt-letter {
+    width: 26px; height: 26px;
+    background: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .option-btn.correct {
+    background: rgba(5,150,105,0.1);
+    border-color: var(--green);
+    color: var(--navy);
+  }
+
+  .option-btn.correct .opt-letter {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+
+  .option-btn.wrong {
+    background: rgba(220,38,38,0.08);
+    border-color: var(--red);
+    color: var(--gray);
+  }
+
+  .option-btn.wrong .opt-letter {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+  }
+
+  .feedback-box {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: slideIn 0.3s ease;
+  }
+
+  .feedback-box.correct-fb {
+    background: rgba(5,150,105,0.1);
+    border-left: 4px solid var(--green);
+    color: var(--navy);
+  }
+
+  .feedback-box.wrong-fb {
+    background: rgba(220,38,38,0.08);
+    border-left: 4px solid var(--red);
+    color: var(--navy);
+  }
+
+  .feedback-emoji { font-size: 22px; margin-right: 8px; }
+
+  .next-btn {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.2s;
+  }
+
+  .next-btn:hover { background: #158898; transform: translateY(-1px); }
+
+  /* ── Scenario Challenge ── */
+  .scenario-card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.4s ease;
+  }
+
+  .scenario-header {
+    background: var(--navy);
+    margin: -36px -36px 28px;
+    padding: 24px 36px;
+    border-radius: 20px 20px 0 0;
+    color: white;
+  }
+
+  .scenario-type {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 6px;
+  }
+
+  .scenario-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .scenario-story {
+    background: var(--sand);
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--dark);
+    margin-bottom: 24px;
+    border-left: 4px solid var(--coral);
+  }
+
+  .scenario-task {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+
+  .drag-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+    background: var(--sand);
+    border-radius: 12px;
+    min-height: 60px;
+    margin-bottom: 16px;
+  }
+
+  .drag-item {
+    background: white;
+    border: 2px solid rgba(0,0,0,0.08);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+    color: var(--navy);
+  }
+
+  .drag-item:hover {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    transform: translateY(-2px);
+  }
+
+  .drop-zone {
+    border: 2px dashed rgba(0,0,0,0.15);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 70px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .drop-zone.over {
+    border-color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .drop-zone-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .match-left, .match-right {
+    display: grid;
+    gap: 8px;
+  }
+
+  .match-term {
+    background: var(--navy);
+    color: white;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .match-term:hover:not(.matched) {
+    border-color: var(--teal);
+  }
+
+  .match-term.selected {
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 2px var(--yellow);
+  }
+
+  .match-term.matched {
+    background: rgba(5,150,105,0.2);
+    border-color: var(--green);
+    color: var(--navy);
+    cursor: default;
+  }
+
+  .match-def {
+    background: var(--sand);
+    border: 2px solid transparent;
+    color: var(--navy);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .match-def:hover:not(.matched) { border-color: var(--teal); }
+  .match-def.selected { border-color: var(--yellow); background: var(--teal-light); }
+  .match-def.matched { background: rgba(5,150,105,0.1); border-color: var(--green); cursor: default; }
+
+  /* ── XP Popup ── */
+  .xp-popup {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    background: var(--yellow);
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    animation: xpPop 2s ease forwards;
+    pointer-events: none;
+  }
+
+  @keyframes xpPop {
+    0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+    20% { opacity: 1; transform: translateY(0) scale(1.05); }
+    70% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  }
+
+  /* ── Module Complete ── */
+  #complete-screen {
+    background: var(--navy);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .complete-icon {
+    font-size: 72px;
+    margin-bottom: 20px;
+    animation: bounce 0.6s ease;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .complete-title {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--yellow);
+  }
+
+  .complete-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 32px;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .score-grid {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .score-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 28px;
+    border-radius: 16px;
+  }
+
+  .score-num {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  .score-lbl {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .modules-grid { padding: 20px; gap: 12px; }
+    .concept-card, .quiz-card, .scenario-card { padding: 24px 20px; }
+    .lesson-body { padding: 24px 16px; }
+    .match-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ HOME ══════════════════════ -->
+<div id="home" class="screen active">
+  <div class="home-content">
+    <div class="badge">🎮 Interactive Learning Game</div>
+    <h1 class="home-title">Service<br><span>Design</span><br>Academy</h1>
+    <p class="home-subtitle">Master the fundamentals of Service Design through<br>stories, challenges, and real-world scenarios.</p>
+    <div class="home-stats">
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Quiz Questions</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Case Studies</div></div>
+      <div class="stat"><div class="stat-num">XP</div><div class="stat-label">Points System</div></div>
+    </div>
+    <button class="btn-primary" onclick="showModules()">Start Learning →</button>
+    <button class="btn-secondary" onclick="showModules()">View All Modules</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ MODULES ══════════════════════ -->
+<div id="modules" class="screen">
+  <div class="modules-header">
+    <button class="back-btn" onclick="showHome()">←</button>
+    <h2>Choose Your Module</h2>
+    <div class="progress-global">
+      <span>Total XP:</span>
+      <span class="xp-badge" id="total-xp">0 XP</span>
+    </div>
+  </div>
+  <div class="modules-grid" id="modules-grid"></div>
+</div>
+
+<!-- ══════════════════════ LESSON ══════════════════════ -->
+<div id="lesson" class="screen">
+  <div class="lesson-header">
+    <button class="back-btn" onclick="showModules()">←</button>
+    <div class="lesson-title-small" id="lesson-module-title">Module 1</div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+      <span style="font-size:12px; color:rgba(255,255,255,0.5);" id="lesson-step-label">Step 1 of 5</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="lesson-progress" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="lesson-body" id="lesson-body"></div>
+</div>
+
+<!-- ══════════════════════ COMPLETE ══════════════════════ -->
+<div id="complete-screen" class="screen">
+  <div class="complete-icon" id="complete-icon">🏆</div>
+  <h2 class="complete-title" id="complete-title">Module Complete!</h2>
+  <p class="complete-sub" id="complete-sub">Great work! You've mastered this concept.</p>
+  <div class="score-grid" id="score-grid"></div>
+  <button class="btn-primary" onclick="showModules()">← Back to Modules</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const MODULES = [
+  {
+    id: 0,
+    icon: '🌍',
+    accent: '#1B9AAA',
+    name: 'What is Service Design?',
+    desc: 'Understand the big picture — what services are and why they need to be designed.',
+    time: '5 min',
+    xpReward: 100,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'A Service is an Experience, Not a Thing',
+        body: `Imagine you walk into a café. You could say you're buying <strong>coffee</strong> — that's the product. But what you're actually experiencing is: the warmth of the space, the barista who remembers your name, the wait time, the music, the cup design, and the feeling of sitting down with your drink.\n\nAll of that together? That's the <strong>service</strong>.\n\nA service is any interaction where value is exchanged without transferring ownership of a physical object. Banking, healthcare, transport, education, apps — these are all services.`,
+        highlight: `📖 Key Definition: "Service design is the activity of planning and organizing people, infrastructure, communication, and material components of a service in order to improve its quality." — Marc Stickdorn & Jakob Schneider`,
+        visual: {
+          title: 'Product vs. Service',
+          rows: [
+            { label: 'PRODUCT', nodes: ['You make it', '→', 'You sell it', '→', 'They own it'], color: '#7C3AED' },
+            { label: 'SERVICE', nodes: ['They arrive', '→', 'You deliver it', '→', 'They experience it'], color: '#1B9AAA' },
+          ]
+        }
+      }},
+      { type: 'concept', content: {
+        heading: 'The IHIP Problem: Why Services Are Hard to Design',
+        body: `Services have 4 unique characteristics that make them fundamentally different from products. These are called <strong>IHIP</strong>:`,
+        list: [
+          { letter: 'I', word: 'Intangibility', color: '#1B9AAA', desc: "You can't touch it before you buy it. You buy a flight ticket before experiencing the flight." },
+          { letter: 'H', word: 'Heterogeneity', color: '#F4845F', desc: "Every delivery is different. Your Monday Starbucks visit feels different from Friday's." },
+          { letter: 'I', word: 'Inseparability', color: '#7C3AED', desc: "You experience it as it's produced. You're ON the plane while it flies." },
+          { letter: 'P', word: 'Perishability', color: '#059669', desc: "Can't be stored. An empty seat at take-off is revenue gone forever." },
+        ],
+        coral: `This is why airline services, bank branches, and hospital waiting rooms feel inconsistent and frustrating — because nobody designed them holistically.`
+      }},
+      { type: 'quiz', content: {
+        question: 'A café sells coffee and provides Wi-Fi, comfortable seating, and friendly staff. What IS the service here?',
+        scenario: 'Think about what the customer is really buying and experiencing.',
+        options: [
+          'The coffee beans and milk in the cup',
+          'The entire experience of visiting the café — from entry to exit',
+          'Just the Wi-Fi and seating arrangement',
+          'The barista\'s labour cost per cup'
+        ],
+        correct: 1,
+        explanation: 'Correct! The service is the total experience — the coffee, the environment, the interaction, the wait, the seating. Service design considers ALL of this, not just the product component.'
+      }},
+      { type: 'quiz', content: {
+        question: 'Which IHIP characteristic explains why a haircut can\'t be saved, stored, or returned?',
+        options: ['Intangibility', 'Heterogeneity', 'Inseparability', 'Perishability'],
+        correct: 3,
+        explanation: 'Perishability! A haircut appointment slot that goes unused is revenue lost forever. Unlike a product (you can store unsold shoes in a warehouse), a service moment that passes is gone.'
+      }},
+      { type: 'scenario', content: {
+        type: 'SCENARIO CHALLENGE',
+        title: 'Spot the Service Moments 🔍',
+        story: `Priya books a doctor\'s appointment online, arrives at the clinic 10 minutes early, waits 35 minutes past her slot, finally sees the doctor for 8 minutes, gets a prescription, and leaves frustrated.`,
+        task: 'Click items in the pool to assign them to "Pain Points", or click an item inside a zone to move it.',
+        items: ['35-min wait with no updates', 'Confusing prescription language', 'No appointment reminder SMS', 'Rude receptionist', 'Doctor explained clearly', 'Parking was easy'],
+        painPoints: ['35-min wait with no updates', 'Confusing prescription language', 'No appointment reminder SMS', 'Rude receptionist'],
+        opportunities: ['Doctor explained clearly', 'Parking was easy'],
+        labels: ['😣 Pain Points (what to fix)', '✨ Moments of Delight (what to build on)']
+      }}
+    ]
+  },
+  {
+    id: 1,
+    icon: '🧭',
+    accent: '#F4845F',
+    name: '6 Principles of Service Design',
+    desc: 'The philosophical foundation — the six principles every service designer lives by.',
+    time: '6 min',
+    xpReward: 120,
+    steps: [
+      { type: 'concept', content: {
+        heading: '6 Principles That Change How You See Services',
+        body: `Marc Stickdorn and Jakob Schneider's book <strong>'This is Service Design Thinking'</strong> gave us 6 principles that are the philosophical backbone of the field. These aren't rules — they're a mindset shift.`,
+        list: [
+          { letter: '01', word: 'User-Centred', color: '#1B9AAA', desc: 'Design from the customer\'s perspective, not the company\'s. Always.' },
+          { letter: '02', word: 'Co-Creative', color: '#F4845F', desc: 'Include customers, staff, AND stakeholders in the design process.' },
+          { letter: '03', word: 'Sequencing', color: '#7C3AED', desc: 'Services unfold over time — design them like a story, not a snapshot.' },
+          { letter: '04', word: 'Evidencing', color: '#059669', desc: 'Make invisible services tangible through physical proof and artifacts.' },
+          { letter: '05', word: 'Holistic', color: '#DC2626', desc: 'Design the entire system — every touchpoint, every department.' },
+          { letter: '06', word: 'Iterative', color: '#6B7280', desc: 'Never stop improving. Services are living things, never "finished".' },
+        ],
+        highlight: 'Most bad services are designed inside-out (convenient for the company). Good services are designed outside-in (what the customer needs).'
+      }},
+      { type: 'concept', content: {
+        heading: 'Deep Dive: Evidencing — Making the Invisible Visible',
+        body: `Because services are intangible (remember IHIP?), customers can't evaluate quality before they buy. <strong>Evidencing</strong> means designing physical or visible clues that signal quality.\n\nThink of it like this: a messy restaurant counter makes you doubt the kitchen even if the food is excellent. A clean, organized counter makes you trust the food even before eating.\n\nEvery physical artifact customers encounter is evidence of your service.`,
+        coral: `🌟 Amazon Example: Amazon's real-time tracking map didn't make packages arrive faster. But customer anxiety dropped dramatically because the service was now "visible". People who can see progress feel less stressed than people who wait in the dark.`,
+        visual: {
+          title: 'Evidence Around You',
+          rows: [
+            { label: 'Hospital', nodes: ['Doctor\'s diploma', '→', 'Trust signal'], color: '#1B9AAA' },
+            { label: 'Hotel', nodes: ['Pillow mint', '→', 'Attention to detail signal'], color: '#F4845F' },
+            { label: 'Uber', nodes: ['Driver rating + photo', '→', 'Safety signal'], color: '#7C3AED' },
+          ]
+        }
+      }},
+      { type: 'quiz', content: {
+        question: 'An airline redesigns its services. They train all staff to greet every passenger by name. Which principle does this BEST represent?',
+        options: ['Sequencing — because greetings happen at a specific moment', 'User-Centred — because it acknowledges the customer as an individual', 'Holistic — because it affects all departments', 'Evidencing — because the greeting is a physical artifact'],
+        correct: 1,
+        explanation: 'User-Centred! Using someone\'s name acknowledges them as a person, not a seat number. This is an outside-in design decision driven by the passenger\'s emotional need to feel recognized, not by what\'s operationally easy for the airline.'
+      }},
+      { type: 'quiz', content: {
+        question: 'A supermarket redesigns its checkout experience. They ask frontline cashiers, shelf stackers, AND customers to co-design the new process. Which principle is this?',
+        options: ['Holistic', 'Iterative', 'Co-Creative', 'Evidencing'],
+        correct: 2,
+        explanation: 'Co-Creative! Involving frontline staff alongside customers recognizes that great service design comes from all voices — especially the people who deliver the service daily, who often have insights no manager ever hears.'
+      }},
+      { type: 'match', content: {
+        title: 'Match the Principle to Its Example',
+        instructions: 'Click a term on the left, then click its matching definition on the right.',
+        pairs: [
+          { term: 'Sequencing', def: 'Disney plans every park moment like a movie scene' },
+          { term: 'Holistic', def: 'Apple Store checkout, layout AND packaging all feel connected' },
+          { term: 'Iterative', def: 'Netflix A/B tests its homepage 24/7, never calls it done' },
+          { term: 'Evidencing', def: 'Law firm uses heavy paper letterhead to signal quality' },
+        ]
+      }}
+    ]
+  },
+  {
+    id: 2,
+    icon: '🗺️',
+    accent: '#7C3AED',
+    name: 'Customer Journey Mapping',
+    desc: 'See the world through your customer\'s eyes. The most powerful empathy tool in service design.',
+    time: '7 min',
+    xpReward: 150,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'The Customer Journey Map: Your Empathy Superpower',
+        body: `A Customer Journey Map (CJM) is a visual timeline of a customer's experience — showing every step they take, every thought they have, and every emotion they feel, from start to finish.\n\nIt sounds simple. But it's the tool that makes organizations truly see themselves the way customers do — often for the first time.`,
+        highlight: `🎯 The KEY insight: Most companies map what THEY think happens. But the real customer journey is always more complex, more emotional, and more surprising than insiders assume.\n\nNHS (UK) mapped a cancer patient journey. Internal teams assumed 12 steps. The real journey had 47 — including 14 steps where patients had to chase the hospital themselves.`,
+        visual: {
+          title: 'Anatomy of a Journey Map (Layers)',
+          rows: [
+            { label: 'STAGES', nodes: ['Discover', '→', 'Consider', '→', 'Buy', '→', 'Use', '→', 'Return'], color: '#1B9AAA' },
+            { label: 'EMOTIONS', nodes: ['😐 Curious', '→', '😕 Confused', '→', '😤 Frustrated', '→', '😊 Happy', '→', '😍 Delighted'], color: '#F4845F' },
+            { label: 'OPPORTUNITIES', nodes: ['↓', 'Fix clarity', '↓', 'Fix friction', '↓', 'Build on this'], color: '#7C3AED' },
+          ]
+        }
+      }},
+      { type: 'concept', content: {
+        heading: 'The 6 Steps to Building a Journey Map',
+        body: ``,
+        steps6: [
+          { n: '1', color: '#1B9AAA', title: 'Choose your Persona', desc: 'Map for ONE specific user type, not all customers. A first-time buyer has a completely different journey from a loyal customer.' },
+          { n: '2', color: '#F4845F', title: 'Define the Scope', desc: 'Where does the journey start and end? From first hearing about you? To recommending you to a friend?' },
+          { n: '3', color: '#7C3AED', title: 'Research the REAL Journey', desc: 'Interview actual customers. Shadow them. Use diary studies. NEVER build it from assumptions in a conference room.' },
+          { n: '4', color: '#059669', title: 'Map Stages and Steps', desc: 'Lay out the phases (Discover, Buy, Use) then each specific action under each phase. Use sticky notes so you can rearrange.' },
+          { n: '5', color: '#DC2626', title: 'Add the Emotional Curve', desc: 'Draw a line showing how emotions rise and fall. The valleys are your biggest design opportunities.' },
+          { n: '6', color: '#F4845F', title: 'Find the Opportunities', desc: 'At each pain point, ask a "How Might We" question. These become your design brief.' },
+        ],
+        coral: '⚠️ Common Mistake: The "Happy Path Trap" — only mapping the ideal flow and ignoring the failures, confusion, and workarounds that real customers experience.'
+      }},
+      { type: 'quiz', content: {
+        question: 'Arjun maps the "ideal" customer journey for his banking app — everything working perfectly, no errors. What is he doing WRONG?',
+        options: [
+          'He should use a Service Blueprint instead',
+          'He\'s falling into the "Happy Path Trap" — ignoring real errors and frustrations customers face',
+          'He should include more stages in his map',
+          'He should interview more stakeholders before starting'
+        ],
+        correct: 1,
+        explanation: 'The Happy Path Trap! Real customer journeys include wrong turns, error messages, confusion, and workarounds. A journey map that only shows the ideal flow is fiction — and it will produce design solutions for a customer who doesn\'t exist.'
+      }},
+      { type: 'quiz', content: {
+        question: 'In a journey map, what does the "emotional curve" primarily help you identify?',
+        scenario: 'Imagine a line graph drawn below all the journey steps that goes up and down.',
+        options: [
+          'How long each step takes',
+          'Which steps involve the most staff',
+          'The peaks (moments of delight) and valleys (pain points) in the experience',
+          'The cost of each touchpoint in the journey'
+        ],
+        correct: 2,
+        explanation: 'The emotional curve reveals the moments that matter most emotionally. The valleys are pain points — your biggest design opportunities. The peaks are moments of delight — design patterns you should study and replicate elsewhere.'
+      }},
+      { type: 'scenario', content: {
+        type: 'BUILD A JOURNEY',
+        title: 'Fix Riya\'s Online Banking Journey 🏦',
+        story: `Riya opens her banking app to pay a bill. She can\'t find the "Payments" section (it\'s buried under "Services"). She clicks wrong twice, gets timed out after 3 minutes, has to log in again, finally finds payments, enters details, gets a vague error message "Transaction failed", calls customer service, waits 12 minutes on hold, and eventually pays successfully.`,
+        task: 'Categorize the steps into Pain Points and Working Moments:',
+        items: ['Open app', 'Can\'t find Payments', 'Wrong clicks → timeout', 'Re-login', 'Vague error message', '12-min hold time', 'Payment succeeds'],
+        painPoints: ['Can\'t find Payments', 'Wrong clicks → timeout', 'Re-login', 'Vague error message', '12-min hold time'],
+        opportunities: ['Open app', 'Payment succeeds'],
+        labels: ['😣 Pain Points (needs redesign)', '✅ Working Moments (build on these)']
+      }}
+    ]
+  },
+  {
+    id: 3,
+    icon: '📐',
+    accent: '#059669',
+    name: 'Service Blueprinting',
+    desc: 'Go beyond the customer view — design the entire system, frontstage and backstage.',
+    time: '7 min',
+    xpReward: 150,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'The Service Blueprint: X-Ray Vision for Services',
+        body: `If the Customer Journey Map shows the <strong>experience</strong>, the Service Blueprint shows the <strong>system</strong> — all the machinery that makes the experience possible.\n\nCreated by G. Lynn Shostack in 1984 for Harvard Business Review, it's the technical document that bridges experience design with operational reality.\n\nThe metaphor: Theatre. The audience sees the stage (frontstage). The crew, props, and director are backstage. A Service Blueprint maps both — and the "line of visibility" that separates them.`,
+        visual: {
+          title: '5 Layers of a Service Blueprint',
+          rows: [
+            { label: 'PHYSICAL EVIDENCE', nodes: ['What customers see/touch/feel at each step'], color: '#FCD34D' },
+            { label: 'CUSTOMER ACTIONS', nodes: ['Everything the customer does in their journey'], color: '#1B9AAA' },
+            { label: 'FRONTSTAGE', nodes: ['Staff & systems visible to customer'], color: '#F4845F' },
+            { label: '────── LINE OF VISIBILITY ──────' },
+            { label: 'BACKSTAGE', nodes: ['Staff & processes hidden from customer'], color: '#7C3AED' },
+            { label: 'SUPPORT PROCESSES', nodes: ['IT, HR, Finance, Legal — the engine room'], color: '#059669' },
+          ]
+        },
+        coral: `💡 Key Insight: Most service failures start BACKSTAGE but manifest FRONTSTAGE. A customer sees a rude staff member (frontstage). The real cause: no proper training program (backstage). The SERVICE BLUEPRINT makes this chain visible.`
+      }},
+      { type: 'quiz', content: {
+        question: 'At a hotel, the chef preparing your meal in the kitchen is an example of:',
+        options: [
+          'A customer touchpoint',
+          'Frontstage action — visible to guests',
+          'Backstage action — the customer doesn\'t see it',
+          'Physical evidence of the service'
+        ],
+        correct: 2,
+        explanation: 'Backstage! The kitchen is behind the "line of visibility." The guest sees the waiter taking their order and the beautifully plated dish arriving (frontstage). The chef\'s work is invisible to them — but absolutely essential to the experience.'
+      }},
+      { type: 'quiz', content: {
+        question: 'A hotel guest complains about slow room service. The real root cause turns out to be an outdated ordering system causing kitchen delays. In a Service Blueprint, where would you find this root cause?',
+        options: [
+          'Physical Evidence layer',
+          'Customer Actions layer',
+          'Frontstage layer — the waiter interaction',
+          'Support Processes layer — the IT system'
+        ],
+        correct: 3,
+        explanation: 'Support Processes! The IT/ordering system is deep in the backstage support layer. This is exactly why blueprints are powerful — they trace the cause-effect chain from a visible customer complaint all the way back to the root system failure.'
+      }},
+      { type: 'match', content: {
+        title: 'Blueprint Layer Match-Up: Coffee Shop',
+        instructions: 'Click a term on the left, then click its matching layer definition on the right.',
+        pairs: [
+          { term: 'Barista calls your name', def: 'Frontstage Action' },
+          { term: 'POS & payment system', def: 'Support Process' },
+          { term: 'Espresso machine maintenance', def: 'Backstage Action' },
+          { term: 'The paper cup with your name', def: 'Physical Evidence' },
+        ]
+      }}
+    ]
+  },
+  {
+    id: 4,
+    icon: '💎',
+    accent: '#F4845F',
+    name: 'The Double Diamond',
+    desc: 'The most famous design process in the world — how to go from vague problem to brilliant solution.',
+    time: '6 min',
+    xpReward: 130,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'The Double Diamond: Diverge, Converge, Repeat',
+        body: `Created by the UK Design Council in 2005, the Double Diamond is the most used design process framework in the world. It describes design as two diamonds — each representing a phase of expanding then narrowing your thinking.\n\nThe genius: you must do this <strong>TWICE</strong>.\n\nFirst to find the <strong>right problem</strong>. Then to find the <strong>right solution</strong>.\n\nMost failed projects skip Diamond 1 entirely — they jump straight to solving the wrong problem, brilliantly.`,
+        visual: {
+          title: 'The Double Diamond Process',
+          rows: [
+            { label: 'DIAMOND 1', nodes: ['DISCOVER ◇', '(expand)', 'DEFINE ◇', '(narrow)'], color: '#1B9AAA' },
+            { label: 'DIAMOND 2', nodes: ['DEVELOP ◇', '(expand)', 'DELIVER ◇', '(narrow)'], color: '#F4845F' },
+          ]
+        },
+        list: [
+          { letter: '01', word: 'Discover', color: '#1B9AAA', desc: 'Research widely. Don\'t solve yet. Observe, interview, explore. You\'re a detective gathering evidence.' },
+          { letter: '02', word: 'Define', color: '#7C3AED', desc: 'Synthesize research. Find the REAL problem (often different from the brief). Create personas and HMW questions.' },
+          { letter: '03', word: 'Develop', color: '#F4845F', desc: 'Generate many solutions. Brainstorm wildly. Quantity before quality. Build rough prototypes.' },
+          { letter: '04', word: 'Deliver', color: '#059669', desc: 'Test, iterate, refine. Pilot with real users. Measure. Launch. Then start improving immediately.' },
+        ]
+      }},
+      { type: 'concept', content: {
+        heading: '"How Might We" — The Magic Question That Opens Diamonds',
+        body: `At the transition from Define → Develop, service designers use a technique called <strong>"How Might We" (HMW)</strong> questions. These reframe problems as opportunities.\n\nThe magic is in the three words:\n• <strong>How</strong> — assumes there IS a solution\n• <strong>Might</strong> — gives permission to explore without committing\n• <strong>We</strong> — frames it as a collaborative challenge`,
+        coral: `🔄 Transform: "Customers hate waiting in queues" → "HMW make the wait feel productive, entertaining, or even disappear entirely?"`,
+        list: [
+          { letter: '❌', word: 'Problem Statement', color: '#DC2626', desc: '"Our mobile checkout abandonment rate is 67%"' },
+          { letter: '✅', word: 'HMW Question', color: '#059669', desc: '"How Might We make completing a purchase feel effortless and even satisfying?"' },
+        ],
+        highlight: 'The problem statement closes thinking. The HMW question opens it. This single framing shift is responsible for some of the best service innovations of the past 20 years.'
+      }},
+      { type: 'quiz', content: {
+        question: 'A startup skips deep user research and immediately jumps to building features based on what the founders assume customers want. Which Double Diamond mistake are they making?',
+        options: [
+          'They\'re moving too slowly through Diamond 2',
+          'They\'re skipping Diamond 1 — they never discovered the real problem',
+          'They need more prototyping in the Deliver phase',
+          'They should have created personas earlier'
+        ],
+        correct: 1,
+        explanation: 'Skipping Diamond 1! The Discover and Define phases exist to ensure you\'re solving the RIGHT problem. Without them, you\'re building solutions at high speed for a problem you only imagined. This is the most expensive mistake in design.'
+      }},
+      { type: 'quiz', content: {
+        question: 'Transform this problem into a proper "How Might We" question: "Elderly patients can\'t remember to take their medication."',
+        options: [
+          '"We need to build a medication reminder app."',
+          '"How Might We help elderly patients feel in control of their health routines?"',
+          '"Why don\'t elderly patients take their medication?"',
+          '"We should send daily SMS reminders."'
+        ],
+        correct: 1,
+        explanation: 'That\'s the HMW format! Notice it frames the challenge around the human ("feel in control") rather than jumping to a specific solution (like an app or SMS). This keeps the design space open and might lead to better solutions than the obvious ones.'
+      }},
+      { type: 'match', content: {
+        title: 'Double Diamond Phase Match',
+        instructions: 'Match each activity to its correct Double Diamond phase.',
+        pairs: [
+          { term: 'Discover', def: 'Shadowing customers at a supermarket for 3 days' },
+          { term: 'Define', def: 'Creating personas and writing HMW questions' },
+          { term: 'Develop', def: 'Bodystorming 5 wild ideas with the whole team' },
+          { term: 'Deliver', def: 'Running a Wizard of Oz prototype with 10 users' },
+        ]
+      }}
+    ]
+  },
+  {
+    id: 5,
+    icon: '🧑‍🤝‍🧑',
+    accent: '#1B9AAA',
+    name: 'Personas & Research',
+    desc: 'Who are you really designing for? Build research-based characters that keep your team human-focused.',
+    time: '5 min',
+    xpReward: 110,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'Personas: Designing for a Specific Human',
+        body: `A <strong>persona</strong> is a fictional but research-based character that represents a key user type. Introduced by Alan Cooper in his 1999 book <em>'The Inmates Are Running the Asylum'</em>.\n\nThe rule: <strong>design for one specific person, and you'll design for everyone who shares their needs. Design for everyone, and you'll design for no one.</strong>\n\nBad personas are demographic: "32-year-old female, urban, ₹8L income".\n\nGood personas capture behaviour, motivation, and context.`,
+        list: [
+          { letter: '❌', word: 'Bad Persona Element', color: '#DC2626', desc: '"Age 29, Bangalore, works in tech, uses mobile"' },
+          { letter: '✅', word: 'Good Persona Element', color: '#059669', desc: '"Always running 10 minutes late, does everything on her phone, deeply distrusts any process that isn\'t transparent, needs banking done in under 3 minutes"' },
+        ],
+        highlight: 'The jobs-to-be-done theory (Clayton Christensen): People don\'t buy products or services — they "hire" them to get a job done. Riya doesn\'t want a bank account. She wants to "feel financially safe without it taking any mental energy".'
+      }},
+      { type: 'quiz', content: {
+        question: 'You\'re designing a hospital appointment app. You create a persona called "Indian Patient, 18-65, lives in cities, has a smartphone." What\'s the biggest problem with this persona?',
+        options: [
+          'The age range is too narrow',
+          'It\'s too demographic — it tells us nothing about behaviours, fears, or motivations',
+          'It should include more cities',
+          'Personas shouldn\'t have age ranges at all'
+        ],
+        correct: 1,
+        explanation: 'It\'s purely demographic — essentially useless for design decisions. A useful persona for this app might be: "Deepak, 58, avoids hospitals because he\'s scared of bad news, books appointments only when pain is unbearable, doesn\'t trust apps, relies on his daughter to help him navigate digital forms." THAT drives design decisions.'
+      }},
+      { type: 'quiz', content: {
+        question: 'A food delivery startup is designing for "Meera" — their persona who is a working mother who orders dinner for her family 4 nights a week. What is Meera\'s "Job-to-be-Done" (from Clayton Christensen\'s theory)?',
+        options: [
+          'To receive food at her door within 30 minutes',
+          'To avoid cooking after a long workday while keeping her family fed and happy',
+          'To get the lowest price on food delivery',
+          'To explore new restaurants in her city'
+        ],
+        correct: 1,
+        explanation: 'The Job-to-be-Done is the UNDERLYING need, not the surface request. Meera isn\'t "hiring" a delivery app — she\'s hiring a solution to the deeper problem of managing family life sustainably while working full time. This insight might lead to features like "family weekly meal planning" rather than just "faster delivery."'
+      }},
+      { type: 'match', content: {
+        title: 'Persona Component Match',
+        instructions: 'Match each persona detail to its correct component type.',
+        pairs: [
+          { term: 'Context & Backstory', def: '"Manages 3 projects simultaneously, commutes 2 hours daily"' },
+          { term: 'Pain Point', def: '"Hates repeating her problem to 3 different customer service agents"' },
+          { term: 'Job-to-be-Done', def: '"Feel financially secure without spending mental energy on it"' },
+          { term: 'Persona Quote', def: '"I just need things to work, on the first try"' },
+        ]
+      }}
+    ]
+  },
+  {
+    id: 6,
+    icon: '📏',
+    accent: '#DC2626',
+    name: 'Measuring Service Quality',
+    desc: 'How do you measure something you can\'t touch? Meet SERVQUAL, NPS, and the metrics that matter.',
+    time: '5 min',
+    xpReward: 110,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'SERVQUAL: The Science of Service Measurement',
+        body: `Developed by Zeithaml, Parasuraman & Berry in 1988, <strong>SERVQUAL</strong> is the most academically rigorous framework for measuring service quality.\n\nThe core idea: Service quality = <strong>Perception minus Expectation</strong>.\n\nIf you expected a 20-minute wait and waited 10 minutes → you're delighted.\nIf you expected a 5-minute wait and waited 10 minutes → you're frustrated.\n\nThe same 10-minute wait. Two completely different service quality scores. This is why managing expectations is as important as delivering the service.`,
+        list: [
+          { letter: 'R', word: 'Reliability', color: '#1B9AAA', desc: 'Deliver what you promised, every time. "Does the package arrive when you said it would?"' },
+          { letter: 'A', word: 'Assurance', color: '#F4845F', desc: 'Staff knowledge and trustworthiness. "Does the doctor seem competent and confident?"' },
+          { letter: 'T', word: 'Tangibles', color: '#7C3AED', desc: 'Physical appearance. "Is the clinic clean? Is the app well-designed?"' },
+          { letter: 'E', word: 'Empathy', color: '#059669', desc: 'Individual care. "Does the call centre treat me as a person, not a ticket number?"' },
+          { letter: 'R', word: 'Responsiveness', color: '#DC2626', desc: 'Prompt service. "How fast do they respond when I have a problem?"' },
+        ]
+      }},
+      { type: 'quiz', content: {
+        question: 'A customer contacts a bank\'s support. The agent is polite and knowledgeable but the call takes 45 minutes to resolve a simple issue. Which RATER dimension is failing?',
+        options: ['Assurance (the agent wasn\'t competent enough)', 'Reliability (the service didn\'t work as promised)', 'Responsiveness (the service was too slow)', 'Empathy (the agent wasn\'t caring enough)'],
+        correct: 2,
+        explanation: 'Responsiveness! The agent had good Assurance (knowledgeable and polite) but 45 minutes for a simple issue means the service was not responsive. Responsiveness is specifically about the speed and willingness to help promptly.'
+      }},
+      { type: 'quiz', content: {
+        question: 'Fred Reichheld\'s Net Promoter Score asks customers just ONE question. What is it?',
+        options: [
+          '"How satisfied are you with our service today?" (scale 1-10)',
+          '"How likely are you to recommend us to a friend or colleague?" (scale 0-10)',
+          '"How much effort did you have to exert to resolve your issue?" (scale 1-7)',
+          '"Would you use our service again?" (Yes/No)'
+        ],
+        correct: 1,
+        explanation: 'The NPS question! Reichheld\'s insight (from "The Ultimate Question", 2006): willingness to recommend is a stronger predictor of business growth than any satisfaction metric. NPS = % Promoters (9-10) minus % Detractors (0-6). Companies with high NPS grow at roughly 2x the rate of competitors.'
+      }},
+      { type: 'match', content: {
+        title: 'SERVQUAL in Real Life',
+        instructions: 'Match each customer complaint to the RATER dimension it violates.',
+        pairs: [
+          { term: 'Reliability', def: '"You said my order would arrive in 2 days. It\'s been a week."' },
+          { term: 'Empathy', def: '"The agent kept interrupting me and reading from a script."' },
+          { term: 'Tangibles', def: '"The waiting room looked dirty and the brochures were outdated."' },
+          { term: 'Assurance', def: '"The agent didn\'t seem to know the product they were selling."' },
+        ]
+      }}
+    ]
+  },
+  {
+    id: 7,
+    icon: '🏆',
+    accent: '#FCD34D',
+    name: 'Real-World Case Studies',
+    desc: 'Learn from how real companies used service design to transform their business.',
+    time: '8 min',
+    xpReward: 200,
+    steps: [
+      { type: 'concept', content: {
+        heading: 'Case Study 1: How Bank of America Got 2.5 Million New Customers',
+        body: `<strong>The Challenge:</strong> Bank of America needed to grow its savings accounts. Traditional marketing campaigns were failing.\n\n<strong>The Approach:</strong> Bank of America partnered with IDEO and did something radical — they observed how people <em>actually</em> managed money in real life. Not how they thought they should. How they actually did.\n\n<strong>The Insight:</strong> People naturally "round up" when thinking about money. They'd spend ₹643 and think of it as "₹650." They'd leave small change on the counter. This natural behaviour was never being leveraged.`,
+        coral: `🚀 The Innovation: IDEO's insight became "Keep the Change" — a feature that rounds up every debit purchase to the nearest dollar and moves the difference to savings. Automatic. Painless. Invisible.\n\nResult: 2.5 million new customers in year one. $2 billion saved by customers. One of the most copied financial service innovations of the last 20 years.`,
+        highlight: `💡 Service Design Principle Used: User-Centred (observed real behaviour, not assumed behaviour) + Evidencing (the round-up statement made invisible savings visible)`
+      }},
+      { type: 'concept', content: {
+        heading: 'Case Study 2: Airbnb — Designing Trust From Scratch',
+        body: `<strong>The Challenge:</strong> In 2009, Airbnb was failing. Revenue was flat. People loved the concept but were reluctant to sleep in strangers' homes.\n\n<strong>The Founders' Research:</strong> Brian Chesky and Joe Gebbia did something almost embarrassingly simple — they flew to New York, stayed with their own hosts, and looked at the listings with fresh eyes.\n\n<strong>The Insight:</strong> The photos were terrible. Dark. Blurry. Uninviting. The "service" of previewing a home through photos was broken.`,
+        coral: `🏠 The Fix: The founders personally took professional photographs of listings. They also redesigned host and guest profiles to build trust — verified identities, reviews, personal stories.\n\nResult: Revenue doubled in a month. Airbnb is now a $75 billion company. Built on one insight: people won't stay somewhere they can't visualize and can't trust.`,
+        highlight: `💡 Service Design Principle Used: Evidencing (photos = physical evidence of the accommodation quality) + Co-Creative (working with hosts directly to improve the service)`
+      }},
+      { type: 'quiz', content: {
+        question: 'In the Bank of America "Keep the Change" case, what was the REAL user insight that led to the innovation?',
+        options: [
+          'People wanted more savings products with better interest rates',
+          'People naturally round up their spending — and this micro-behaviour could power automatic saving',
+          'People didn\'t trust banks with their extra money',
+          'People needed reminders to save money manually each week'
+        ],
+        correct: 1,
+        explanation: 'The behavioural insight! IDEO didn\'t ask people "how do you want to save money?" — they watched how people actually behaved. The round-up habit was already there; it just needed a service designed around it. This is the power of observational research over surveys.'
+      }},
+      { type: 'quiz', content: {
+        question: 'Airbnb\'s early breakthrough came from improving listing photos. Which IHIP characteristic does this directly address?',
+        options: [
+          'Heterogeneity — every home is different',
+          'Inseparability — guests and hosts meet at the same time',
+          'Intangibility — you can\'t experience the home before booking; photos are evidence of quality',
+          'Perishability — empty rooms lose value every night'
+        ],
+        correct: 2,
+        explanation: 'Intangibility! You can\'t stay in the home before booking it, so photos serve as tangible evidence of what you\'ll experience. Better photos reduced the intangibility problem. This is exactly what Evidencing (Principle #4) means in practice — making the invisible service visible through physical artifacts.'
+      }},
+      { type: 'match', content: {
+        title: 'Final Challenge: Case Study Principle Match',
+        instructions: 'Match each service design action to its core principle.',
+        pairs: [
+          { term: 'User-Centred', def: 'IDEO observed real money behaviour before designing anything' },
+          { term: 'Evidencing', def: 'Airbnb improved photos to make home quality tangible before booking' },
+          { term: 'Co-Creative', def: 'GOV.UK involved actual citizens to test every government web service' },
+          { term: 'Iterative', def: 'Netflix A/B tests its interface continuously, never declaring it "done"' },
+        ]
+      }}
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  totalXP: 0,
+  completedModules: new Set(),
+  currentModule: null,
+  currentStep: 0,
+  correctAnswers: 0,
+  totalQuestions: 0,
+  dragState: {},
+};
+
+// ═══════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showHome() { showScreen('home'); }
+
+function showModules() {
+  renderModules();
+  showScreen('modules');
+}
+
+function showComplete(mod, correct, total) {
+  document.getElementById('complete-icon').textContent = (total > 0 && correct / total >= 0.8) ? '🏆' : '🎯';
+  document.getElementById('complete-title').textContent = mod.name + ' — Complete!';
+  document.getElementById('complete-sub').textContent = `You scored ${correct}/${total} on questions. ${(total > 0 && correct/total >= 0.8) ? 'Outstanding work!' : 'Good effort! Keep learning and exploring.'}`;
+  const xp = Math.round(mod.xpReward * (0.5 + 0.5 * (total > 0 ? correct / total : 1)));
+  document.getElementById('score-grid').innerHTML = `
+    <div class="score-item"><div class="score-num">${correct}/${total}</div><div class="score-lbl">Questions Right</div></div>
+    <div class="score-item"><div class="score-num">+${xp}</div><div class="score-lbl">XP Earned</div></div>
+    <div class="score-item"><div class="score-num">${state.completedModules.size}</div><div class="score-lbl">Modules Done</div></div>
+  `;
+  showScreen('complete-screen');
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULES RENDER
+// ═══════════════════════════════════════════════════════
+function renderModules() {
+  document.getElementById('total-xp').textContent = state.totalXP + ' XP';
+  const grid = document.getElementById('modules-grid');
+  grid.innerHTML = MODULES.map((mod, i) => {
+    const done = state.completedModules.has(i);
+    return `
+      <div class="module-card ${done ? 'completed' : ''}" 
+           style="--accent: ${mod.accent}"
+           onclick="startModule(${i})">
+        <div class="module-icon">${mod.icon}</div>
+        <div class="module-num">Module ${String(i+1).padStart(2,'0')}</div>
+        <div class="module-name">${mod.name}</div>
+        <div class="module-desc">${mod.desc}</div>
+        <div class="module-meta">
+          <span>⏱ ${mod.time}</span>
+          <span>⭐ ${mod.xpReward} XP</span>
+          <span>${mod.steps.length} steps</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// LESSON ENGINE
+// ═══════════════════════════════════════════════════════
+function startModule(idx) {
+  state.currentModule = idx;
+  state.currentStep = 0;
+  state.correctAnswers = 0;
+  state.totalQuestions = 0;
+  const mod = MODULES[idx];
+  document.getElementById('lesson-module-title').textContent = `Module ${idx+1}: ${mod.name}`;
+  showScreen('lesson');
+  renderStep();
+}
+
+function renderStep() {
+  const mod = MODULES[state.currentModule];
+  const step = mod.steps[state.currentStep];
+  const total = mod.steps.length;
+  const pct = (state.currentStep / total) * 100;
+  document.getElementById('lesson-progress').style.width = pct + '%';
+  document.getElementById('lesson-step-label').textContent = `Step ${state.currentStep + 1} of ${total}`;
+
+  const body = document.getElementById('lesson-body');
+  body.innerHTML = '';
+
+  if (step.type === 'concept') renderConceptStep(body, step.content);
+  else if (step.type === 'quiz') renderQuizStep(body, step.content);
+  else if (step.type === 'scenario') renderScenarioStep(body, step.content);
+  else if (step.type === 'match') renderMatchStep(body, step.content);
+
+  body.scrollTop = 0;
+}
+
+function nextStep() {
+  const mod = MODULES[state.currentModule];
+  if (state.currentStep < mod.steps.length - 1) {
+    state.currentStep++;
+    renderStep();
+    document.getElementById('lesson-body').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    // Module done
+    const totalQ = Math.max(state.totalQuestions, 1);
+    const xp = Math.round(mod.xpReward * (0.5 + 0.5 * (state.correctAnswers / totalQ)));
+    state.totalXP += xp;
+    state.completedModules.add(state.currentModule);
+    showXP(`+${xp} XP`);
+    setTimeout(() => showComplete(mod, state.correctAnswers, state.totalQuestions), 800);
+  }
+}
+
+function showXP(text) {
+  const el = document.createElement('div');
+  el.className = 'xp-popup';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2100);
+}
+
+// ── CONCEPT STEP ──────────────────────────────────────────
+function renderConceptStep(container, c) {
+  let html = `<div class="concept-card">
+    <div class="concept-step"><div class="step-dot"></div><span class="step-text">Learn</span></div>
+    <h2 class="concept-heading">${c.heading}</h2>`;
+
+  if (c.body) {
+    html += `<p class="concept-body">${c.body.replace(/\n/g, '<br><br>')}</p>`;
+  }
+
+  if (c.highlight) {
+    html += `<div class="highlight-box">${c.highlight}</div>`;
+  }
+
+  if (c.coral) {
+    html += `<div class="coral-box">${c.coral}</div>`;
+  }
+
+  if (c.list) {
+    html += c.list.map(item => `
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;padding:12px 14px;background:${item.color}18;border-radius:10px;border-left:4px solid ${item.color}">
+        <span style="width:32px;height:32px;background:${item.color};color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0">${item.letter}</span>
+        <div><strong style="color:${item.color}">${item.word}</strong><br><span style="font-size:13px;color:#374151">${item.desc}</span></div>
+      </div>`).join('');
+  }
+
+  if (c.visual) {
+    html += `<div class="visual-diagram"><div class="diagram-title">${c.visual.title}</div>`;
+    c.visual.rows.forEach(row => {
+      if (!row.nodes) {
+        html += `<div style="text-align:center;color:rgba(255,255,255,0.4);font-size:12px;margin:4px 0;letter-spacing:2px">${row.label}</div>`;
+        return;
+      }
+      html += `<div class="diagram-row">
+        <span style="font-size:10px;font-weight:700;letter-spacing:1px;color:${row.color};width:80px;flex-shrink:0">${row.label}</span>`;
+      row.nodes.forEach((n,i) => {
+        if (n === '→') html += `<span class="diagram-arrow">→</span>`;
+        else html += `<span class="diagram-node" style="background:${row.color}22;color:${row.color};border:1px solid ${row.color}44">${n}</span>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (c.steps6) {
+    html += c.steps6.map(s => `
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:12px 14px;background:${s.color}18;border-radius:10px">
+        <span style="width:28px;height:28px;background:${s.color};color:white;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0">${s.n}</span>
+        <div><strong style="color:var(--navy)">${s.title}</strong><br><span style="font-size:13px;color:#374151">${s.desc}</span></div>
+      </div>`).join('');
+  }
+
+  html += `<button class="continue-btn" onclick="nextStep()">Continue →</button></div>`;
+  container.innerHTML = html;
+}
+
+// ── QUIZ STEP ─────────────────────────────────────────────
+function renderQuizStep(container, c) {
+  state.totalQuestions++;
+  const letters = ['A', 'B', 'C', 'D'];
+  let html = `<div class="quiz-card" id="quiz-card">
+    <div class="quiz-label">🧠 Quiz</div>
+    <h3 class="quiz-question">${c.question}</h3>`;
+  if (c.scenario) html += `<div class="quiz-scenario">${c.scenario}</div>`;
+  html += `<div class="options-grid">`;
+  c.options.forEach((opt, i) => {
+    html += `<button class="option-btn" id="opt-${i}" onclick="selectAnswer(${i}, ${c.correct}, '${(c.explanation||'').replace(/'/g,"\\'")}')">
+      <span class="opt-letter">${letters[i]}</span>${opt}</button>`;
+  });
+  html += `</div><div id="quiz-feedback"></div></div>`;
+  container.innerHTML = html;
+}
+
+function selectAnswer(chosen, correct, explanation) {
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[correct].classList.add('correct');
+  const fb = document.getElementById('quiz-feedback');
+  if (chosen === correct) {
+    state.correctAnswers++;
+    btns[chosen].classList.add('correct');
+    fb.innerHTML = `<div class="feedback-box correct-fb"><span class="feedback-emoji">✅</span><strong>Correct!</strong> ${explanation}
+      <br><br><button class="next-btn" onclick="nextStep()">Next →</button></div>`;
+    showXP('+10 XP');
+  } else {
+    btns[chosen].classList.add('wrong');
+    fb.innerHTML = `<div class="feedback-box wrong-fb"><span class="feedback-emoji">❌</span><strong>Not quite.</strong> ${explanation}
+      <br><br><button class="next-btn" onclick="nextStep()">Next →</button></div>`;
+  }
+}
+
+// ── SCENARIO STEP ─────────────────────────────────────────
+function renderScenarioStep(container, c) {
+  state.totalQuestions++;
+  const id = 'scenario_' + Date.now();
+  state.dragState[id] = { items: [...c.items], zone1: [], zone2: [], correct1: c.painPoints, correct2: c.opportunities };
+
+  let html = `<div class="scenario-card">
+    <div class="scenario-header">
+      <div class="scenario-type">${c.type}</div>
+      <div class="scenario-title">${c.title}</div>
+    </div>
+    <div class="scenario-story">${c.story}</div>
+    <div class="scenario-task">${c.task}</div>
+    <div class="drop-zone-label">Unassigned Items (Click to move to Zone 1):</div>
+    <div class="drag-pool" id="pool-${id}">
+      ${c.items.map((item, i) => `<div class="drag-item" id="di-${id}-${i}" draggable="true" 
+        ondragstart="dragStart(event,'${id}',${i})"
+        onclick="clickItem('${id}', ${i})">${item}</div>`).join('')}
+    </div>
+    <div class="drop-zone-label">${c.labels[0]} (Click items to move to Zone 2):</div>
+    <div class="drop-zone" id="zone1-${id}" 
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
+      ondrop="dropItem(event,'${id}',1)"></div>
+    <div class="drop-zone-label">${c.labels[1]} (Click items to return to pool):</div>
+    <div class="drop-zone" id="zone2-${id}"
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
+      ondrop="dropItem(event,'${id}',2)"></div>
+    <button class="next-btn" style="margin-top:12px" onclick="checkScenario('${id}')">Check My Answers ✓</button>
+    <div id="scenario-fb-${id}"></div>
+  </div>`;
+  container.innerHTML = html;
+}
+
+let _dragId = null, _dragModId = null;
+
+function dragStart(e, modId, idx) {
+  _dragId = idx; _dragModId = modId;
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function dropItem(e, modId, zone) {
+  e.preventDefault();
+  const zoneEl = e.target.closest('.drop-zone');
+  if (zoneEl) zoneEl.classList.remove('over');
+  if (_dragModId !== modId || _dragId === null) return;
+  const itemEl = document.getElementById(`di-${modId}-${_dragId}`);
+  if (!itemEl) return;
+
+  if (zone === 1) moveItemToZone1(modId, _dragId);
+  else if (zone === 2) moveItemToZone2(modId, _dragId);
+  _dragId = null;
+}
+
+function clickItem(modId, idx) {
+  const itemEl = document.getElementById(`di-${modId}-${idx}`);
+  if (!itemEl) return;
+  const parent = itemEl.parentElement;
+  if (parent.id === `pool-${modId}`) {
+    moveItemToZone1(modId, idx);
+  } else if (parent.id === `zone1-${modId}`) {
+    moveItemToZone2(modId, idx);
+  } else if (parent.id === `zone2-${modId}`) {
+    moveItemToPool(modId, idx);
+  }
+}
+
+function moveItemToZone1(modId, idx) {
+  const itemEl = document.getElementById(`di-${modId}-${idx}`);
+  const zone1 = document.getElementById(`zone1-${modId}`);
+  if (itemEl && zone1) zone1.appendChild(itemEl);
+}
+
+function moveItemToZone2(modId, idx) {
+  const itemEl = document.getElementById(`di-${modId}-${idx}`);
+  const zone2 = document.getElementById(`zone2-${modId}`);
+  if (itemEl && zone2) zone2.appendChild(itemEl);
+}
+
+function moveItemToPool(modId, idx) {
+  const itemEl = document.getElementById(`di-${modId}-${idx}`);
+  const pool = document.getElementById(`pool-${modId}`);
+  if (itemEl && pool) pool.appendChild(itemEl);
+}
+
+function checkScenario(id) {
+  const ds = state.dragState[id];
+  const z1 = document.getElementById(`zone1-${id}`);
+  const z2 = document.getElementById(`zone2-${id}`);
+  const got1 = Array.from(z1.querySelectorAll('.drag-item')).map(el => el.textContent.trim());
+  const got2 = Array.from(z2.querySelectorAll('.drag-item')).map(el => el.textContent.trim());
+  const correct1 = ds.correct1;
+  const correct2 = ds.correct2;
+  
+  const c1 = got1.filter(t => correct1.includes(t)).length;
+  const c2 = got2.filter(t => correct2.includes(t)).length;
+  const total = correct1.length + correct2.length;
+  const score = c1 + c2;
+
+  if (score === total) state.correctAnswers++;
+  const fb = document.getElementById(`scenario-fb-${id}`);
+  fb.innerHTML = `<div class="feedback-box ${score >= total*0.7 ? 'correct-fb' : 'wrong-fb'}" style="margin-top:12px">
+    ${score >= total*0.7 ? '✅' : '❌'} <strong>${score}/${total} correct!</strong><br>
+    Pain points were: <em>${correct1.join(', ')}</em><br>
+    Moments to build on: <em>${correct2.join(', ')}</em>
+    <br><br><button class="next-btn" onclick="nextStep()">Next →</button>
+  </div>`;
+}
+
+// ── MATCH STEP ────────────────────────────────────────────
+function renderMatchStep(container, c) {
+  state.totalQuestions++;
+  const pairs = c.pairs;
+  const shuffledDefs = [...pairs].sort(() => Math.random() - 0.5);
+
+  let html = `<div class="quiz-card">
+    <div class="quiz-label">🔗 Match</div>
+    <h3 class="quiz-question" style="font-size:18px;margin-bottom:6px">${c.title}</h3>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:20px">${c.instructions}</p>
+    <div class="match-grid">
+      <div class="match-left">
+        ${pairs.map((p,i) => `<div class="match-term" id="mterm-${i}" onclick="selectTerm(${i})">${p.term}</div>`).join('')}
+      </div>
+      <div class="match-right">
+        ${shuffledDefs.map((p,i) => `<div class="match-def" id="mdef-${i}" data-def="${p.def.replace(/"/g, '&quot;')}" onclick="selectDef(${i})">${p.def}</div>`).join('')}
+      </div>
+    </div>
+    <div id="match-feedback"></div>
+  </div>`;
+  container.innerHTML = html;
+
+  window._matchData = { pairs, shuffledDefs, selectedTerm: null, matchedCount: 0 };
+}
+
+function selectTerm(i) {
+  const termEl = document.getElementById(`mterm-${i}`);
+  if (termEl.classList.contains('matched')) return;
+
+  document.querySelectorAll('.match-term').forEach(el => el.classList.remove('selected'));
+  termEl.classList.add('selected');
+  window._matchData.selectedTerm = i;
+}
+
+function selectDef(i) {
+  const defEl = document.getElementById(`mdef-${i}`);
+  if (defEl.classList.contains('matched')) return;
+
+  const selectedTermIdx = window._matchData.selectedTerm;
+  if (selectedTermIdx === null || selectedTermIdx === undefined) {
+    alert("Please click a term on the left first!");
+    return;
+  }
+
+  const termEl = document.getElementById(`mterm-${selectedTermIdx}`);
+  const termObj = window._matchData.pairs[selectedTermIdx];
+  const chosenDef = defEl.getAttribute('data-def');
+
+  if (termObj.def === chosenDef) {
+    // Match correct
+    termEl.classList.remove('selected');
+    termEl.classList.add('matched');
+    defEl.classList.add('matched');
+    window._matchData.selectedTerm = null;
+    window._matchData.matchedCount++;
+
+    if (window._matchData.matchedCount === window._matchData.pairs.length) {
+      state.correctAnswers++;
+      const fb = document.getElementById('match-feedback');
+      fb.innerHTML = `<div class="feedback-box correct-fb"><span class="feedback-emoji">✅</span><strong>All matched correctly!</strong> Great job!
+        <br><br><button class="next-btn" onclick="nextStep()">Next →</button></div>`;
+      showXP('+10 XP');
+    }
+  } else {
+    // Match wrong
+    termEl.classList.remove('selected');
+    window._matchData.selectedTerm = null;
+    alert("That definition doesn't match! Try again.");
+  }
+}
+</script>
+</body>
+</html>
